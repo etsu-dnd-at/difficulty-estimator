@@ -54,7 +54,8 @@ update msg model =
 view : Model -> Html Msg
 view model =
     table [] 
-        [ thead [] 
+        [ caption [] [ text "Characters" ]
+        , thead [] 
             [ tr [] 
                 [ th [] [ text "Active" ]
                 , th [] [ text "Character" ]
@@ -87,8 +88,10 @@ view model =
 
 makeRow : Int -> Player -> Html Msg
 makeRow index player =
-    tr [] 
-        [ td [] [ input [ type_ "checkbox"
+    tr [ style [("opacity", if player.active then "1.0" else "0.5")] ] 
+        [ td    [ onClick (ChangePlayer index player.name player.level (not player.active)) 
+                ] 
+                [ input [ type_ "checkbox"
                         , checked player.active
                         , onCheck (ChangePlayer index player.name player.level) 
                         ] 

@@ -8303,12 +8303,30 @@ var _user$project$Main$makeRow = F2(
 	function (index, player) {
 		return A2(
 			_elm_lang$html$Html$tr,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'opacity',
+							_1: player.active ? '1.0' : '0.5'
+						},
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$td,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							A4(_user$project$Main$ChangePlayer, index, player.name, player.level, !player.active)),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: A2(
@@ -8437,31 +8455,31 @@ var _user$project$Main$view = function (model) {
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$thead,
+				_elm_lang$html$Html$caption,
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$tr,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$th,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Active'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {
+					_0: _elm_lang$html$Html$text('Characters'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$thead,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$tr,
+							{ctor: '[]'},
+							{
 								ctor: '::',
 								_0: A2(
 									_elm_lang$html$Html$th,
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Character'),
+										_0: _elm_lang$html$Html$text('Active'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -8471,7 +8489,7 @@ var _user$project$Main$view = function (model) {
 										{ctor: '[]'},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Level'),
+											_0: _elm_lang$html$Html$text('Character'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -8479,66 +8497,44 @@ var _user$project$Main$view = function (model) {
 										_0: A2(
 											_elm_lang$html$Html$th,
 											{ctor: '[]'},
-											{ctor: '[]'}),
-										_1: {ctor: '[]'}
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Level'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$th,
+												{ctor: '[]'},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}
 									}
 								}
-							}
-						}),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$tbody,
-					{ctor: '[]'},
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Array$toList(
-							A2(_elm_lang$core$Array$indexedMap, _user$project$Main$makeRow, model.players)),
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$tr,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$td,
-										{ctor: '[]'},
-										{ctor: '[]'}),
-									_1: {
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$tbody,
+						{ctor: '[]'},
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Array$toList(
+								A2(_elm_lang$core$Array$indexedMap, _user$project$Main$makeRow, model.players)),
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$tr,
+									{ctor: '[]'},
+									{
 										ctor: '::',
 										_0: A2(
 											_elm_lang$html$Html$td,
 											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$input,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$type_('text'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$placeholder('character'),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$value(model.nextPlayer.name),
-																_1: {
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Events$onInput(
-																		function (newName) {
-																			return A2(_user$project$Main$UpdateNext, newName, model.nextPlayer.level);
-																		}),
-																	_1: {ctor: '[]'}
-																}
-															}
-														}
-													},
-													{ctor: '[]'}),
-												_1: {ctor: '[]'}
-											}),
+											{ctor: '[]'}),
 										_1: {
 											ctor: '::',
 											_0: A2(
@@ -8550,24 +8546,21 @@ var _user$project$Main$view = function (model) {
 														_elm_lang$html$Html$input,
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$type_('number'),
+															_0: _elm_lang$html$Html_Attributes$type_('text'),
 															_1: {
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$value(
-																	_elm_lang$core$Basics$toString(model.nextPlayer.level)),
+																_0: _elm_lang$html$Html_Attributes$placeholder('character'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Events$onInput(
-																		function (newLvlStr) {
-																			return A2(
-																				_user$project$Main$UpdateNext,
-																				model.nextPlayer.name,
-																				A2(
-																					_elm_lang$core$Result$withDefault,
-																					0,
-																					_elm_lang$core$String$toInt(newLvlStr)));
-																		}),
-																	_1: {ctor: '[]'}
+																	_0: _elm_lang$html$Html_Attributes$value(model.nextPlayer.name),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onInput(
+																			function (newName) {
+																				return A2(_user$project$Main$UpdateNext, newName, model.nextPlayer.level);
+																			}),
+																		_1: {ctor: '[]'}
+																	}
 																}
 															}
 														},
@@ -8585,14 +8578,23 @@ var _user$project$Main$view = function (model) {
 															_elm_lang$html$Html$input,
 															{
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$type_('button'),
+																_0: _elm_lang$html$Html_Attributes$type_('number'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$value('+'),
+																	_0: _elm_lang$html$Html_Attributes$value(
+																		_elm_lang$core$Basics$toString(model.nextPlayer.level)),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onClick(
-																			_user$project$Main$AddPlayer(model.nextPlayer)),
+																		_0: _elm_lang$html$Html_Events$onInput(
+																			function (newLvlStr) {
+																				return A2(
+																					_user$project$Main$UpdateNext,
+																					model.nextPlayer.name,
+																					A2(
+																						_elm_lang$core$Result$withDefault,
+																						0,
+																						_elm_lang$core$String$toInt(newLvlStr)));
+																			}),
 																		_1: {ctor: '[]'}
 																	}
 																}
@@ -8600,14 +8602,41 @@ var _user$project$Main$view = function (model) {
 															{ctor: '[]'}),
 														_1: {ctor: '[]'}
 													}),
-												_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$td,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$input,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$type_('button'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$value('+'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onClick(
+																				_user$project$Main$AddPlayer(model.nextPlayer)),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																},
+																{ctor: '[]'}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
-									}
-								}),
-							_1: {ctor: '[]'}
-						})),
-				_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							})),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
