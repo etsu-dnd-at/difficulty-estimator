@@ -1,0 +1,25 @@
+body {
+    font-family: "Helvetica", "Arial", "sans-serif";
+}
+
+table.entry-table {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    margin: 1em;
+}
+
+table.entry-table > thead {
+    font-size: smaller;
+}
+
+div#wrap-entry-tables {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+table.entry-table td, table.entry-table th {
+    padding: 0.3em;
+}
