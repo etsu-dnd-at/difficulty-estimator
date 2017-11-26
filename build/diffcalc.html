@@ -8246,6 +8246,16 @@ var _user$project$Main$Player = F3(
 	function (a, b, c) {
 		return {name: a, level: b, active: c};
 	});
+var _user$project$Main$Enemy = F2(
+	function (a, b) {
+		return {xp: a, count: b};
+	});
+var _user$project$Main$model = {
+	players: _elm_lang$core$Array$empty,
+	nextPlayer: A3(_user$project$Main$Player, '', 1, true),
+	enemies: _elm_lang$core$Array$empty,
+	nextEnemy: A2(_user$project$Main$Enemy, 0, 0)
+};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -8272,22 +8282,403 @@ var _user$project$Main$update = F2(
 							A3(_user$project$Main$Player, _p0._1, _p0._2, _p0._3),
 							model.players)
 					});
-			default:
+			case 'UpdateNext':
 				return _elm_lang$core$Native_Utils.update(
 					model,
 					{
 						nextPlayer: A3(_user$project$Main$Player, _p0._0, _p0._1, true)
 					});
+			case 'AddEnemy':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						enemies: A2(_elm_lang$core$Array$push, _p0._0, model.enemies)
+					});
+			case 'RemoveEnemy':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						enemies: A2(_user$project$Main$removePlayer, _p0._0, model.enemies)
+					});
+			case 'ChangeEnemy':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						enemies: A3(
+							_elm_lang$core$Array$set,
+							_p0._0,
+							A2(_user$project$Main$Enemy, _p0._1, _p0._2),
+							model.enemies)
+					});
+			default:
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						nextEnemy: A2(_user$project$Main$Enemy, _p0._0, _p0._1)
+					});
 		}
 	});
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {players: a, nextPlayer: b};
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {players: a, nextPlayer: b, enemies: c, nextEnemy: d};
 	});
-var _user$project$Main$model = A2(
-	_user$project$Main$Model,
-	_elm_lang$core$Array$empty,
-	A3(_user$project$Main$Player, '', 0, true));
+var _user$project$Main$UpdateNextEnemy = F2(
+	function (a, b) {
+		return {ctor: 'UpdateNextEnemy', _0: a, _1: b};
+	});
+var _user$project$Main$RemoveEnemy = function (a) {
+	return {ctor: 'RemoveEnemy', _0: a};
+};
+var _user$project$Main$ChangeEnemy = F3(
+	function (a, b, c) {
+		return {ctor: 'ChangeEnemy', _0: a, _1: b, _2: c};
+	});
+var _user$project$Main$makeEnemyRow = F2(
+	function (idx, enemy) {
+		return A2(
+			_elm_lang$html$Html$tr,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$td,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_elm_lang$core$Basics$toString(idx + 1)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$td,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$type_('number'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$value(
+											_elm_lang$core$Basics$toString(enemy.xp)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$step('10'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(
+													function (newXp) {
+														return A3(
+															_user$project$Main$ChangeEnemy,
+															idx,
+															A2(
+																_elm_lang$core$Result$withDefault,
+																0,
+																_elm_lang$core$String$toInt(newXp)),
+															enemy.count);
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$td,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$input,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$type_('number'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$value(
+												_elm_lang$core$Basics$toString(enemy.count)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(
+													function (newCount) {
+														return A3(
+															_user$project$Main$ChangeEnemy,
+															idx,
+															enemy.xp,
+															A2(
+																_elm_lang$core$Result$withDefault,
+																0,
+																_elm_lang$core$String$toInt(newCount)));
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$td,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$input,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$type_('button'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$value('-'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(
+														_user$project$Main$RemoveEnemy(idx)),
+													_1: {ctor: '[]'}
+												}
+											}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			});
+	});
+var _user$project$Main$AddEnemy = function (a) {
+	return {ctor: 'AddEnemy', _0: a};
+};
+var _user$project$Main$enemyView = function (model) {
+	return A2(
+		_elm_lang$html$Html$table,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'border', _1: '1px solid gray'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'border-collapse', _1: 'collapse'},
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$caption,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Enemies'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$thead,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: 'smaller'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$tr,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$th,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$th,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('XP'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$th,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Count'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$th,
+												{ctor: '[]'},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$tbody,
+						{ctor: '[]'},
+						_elm_lang$core$Array$toList(
+							A2(_elm_lang$core$Array$indexedMap, _user$project$Main$makeEnemyRow, model.enemies))),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$tfoot,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$tr,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$td,
+											{ctor: '[]'},
+											{ctor: '[]'}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$td,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$input,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('number'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$placeholder('XP'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$step('10'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onInput(
+																			function (newXp) {
+																				return A2(
+																					_user$project$Main$UpdateNextEnemy,
+																					A2(
+																						_elm_lang$core$Result$withDefault,
+																						0,
+																						_elm_lang$core$String$toInt(newXp)),
+																					model.nextEnemy.count);
+																			}),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														},
+														{ctor: '[]'}),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$td,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$input,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$type_('number'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$placeholder('Count'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onInput(
+																			function (newCount) {
+																				return A2(
+																					_user$project$Main$UpdateNextEnemy,
+																					model.nextEnemy.xp,
+																					A2(
+																						_elm_lang$core$Result$withDefault,
+																						0,
+																						_elm_lang$core$String$toInt(newCount)));
+																			}),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															},
+															{ctor: '[]'}),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$td,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$input,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$type_('button'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$value('+'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onClick(
+																				_user$project$Main$AddEnemy(model.nextEnemy)),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																},
+																{ctor: '[]'}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
 var _user$project$Main$UpdateNext = F2(
 	function (a, b) {
 		return {ctor: 'UpdateNext', _0: a, _1: b};
@@ -8299,7 +8690,7 @@ var _user$project$Main$ChangePlayer = F4(
 var _user$project$Main$RemovePlayer = function (a) {
 	return {ctor: 'RemovePlayer', _0: a};
 };
-var _user$project$Main$makeRow = F2(
+var _user$project$Main$makeCharacterRow = F2(
 	function (index, player) {
 		return A2(
 			_elm_lang$html$Html$tr,
@@ -8448,10 +8839,23 @@ var _user$project$Main$makeRow = F2(
 var _user$project$Main$AddPlayer = function (a) {
 	return {ctor: 'AddPlayer', _0: a};
 };
-var _user$project$Main$view = function (model) {
+var _user$project$Main$characterView = function (model) {
 	return A2(
 		_elm_lang$html$Html$table,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'border', _1: '1px solid gray'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'border-collapse', _1: 'collapse'},
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
@@ -8466,7 +8870,16 @@ var _user$project$Main$view = function (model) {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$thead,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: 'smaller'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: A2(
@@ -8520,10 +8933,13 @@ var _user$project$Main$view = function (model) {
 					_0: A2(
 						_elm_lang$html$Html$tbody,
 						{ctor: '[]'},
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Array$toList(
-								A2(_elm_lang$core$Array$indexedMap, _user$project$Main$makeRow, model.players)),
+						_elm_lang$core$Array$toList(
+							A2(_elm_lang$core$Array$indexedMap, _user$project$Main$makeCharacterRow, model.players))),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$tfoot,
+							{ctor: '[]'},
 							{
 								ctor: '::',
 								_0: A2(
@@ -8634,9 +9050,63 @@ var _user$project$Main$view = function (model) {
 										}
 									}),
 								_1: {ctor: '[]'}
-							})),
-					_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
 				}
+			}
+		});
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'display', _1: 'flex'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'flex-flow', _1: 'row wrap'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'justify-content', _1: 'center'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'align-items', _1: 'flex-start'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'align-content', _1: 'flex-start'},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _user$project$Main$characterView(model),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _user$project$Main$enemyView(model),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
 			}
 		});
 };

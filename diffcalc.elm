@@ -15,13 +15,25 @@ type alias Player =
     , active : Bool 
     }
 
+type alias Enemy =
+    { xp : Int
+    , count : Int
+    }
+
 type alias Model = 
     { players : Array Player
     , nextPlayer : Player
+    , enemies : Array Enemy
+    , nextEnemy : Enemy
     }
 
 model : Model
-model = Model Array.empty (Player "" 0 True)
+model = 
+    { players = Array.empty
+    , nextPlayer = Player "" 1 True
+    , enemies = Array.empty
+    , nextEnemy = Enemy 0 0
+    }
 
 removePlayer : Int -> Array a -> Array a
 removePlayer idx arr =
@@ -29,12 +41,16 @@ removePlayer idx arr =
 
 
 -- messages
-
+-- TODO: There is symmetry here; these can be consolidated if you use different types
 type Msg 
     = AddPlayer Player
     | RemovePlayer Int
     | ChangePlayer Int String Int Bool
     | UpdateNext String Int
+    | AddEnemy Enemy
+    | ChangeEnemy Int Int Int
+    | RemoveEnemy Int
+    | UpdateNextEnemy Int Int
 
 update : Msg -> Model -> Model
 update msg model =
@@ -47,15 +63,34 @@ update msg model =
             { model | players = Array.set idx (Player name lvl active) model.players }
         UpdateNext name lvl ->
             { model | nextPlayer = Player name lvl True }
+        AddEnemy newEnemy ->
+            { model | enemies = Array.push newEnemy model.enemies }
+        RemoveEnemy idx ->
+            { model | enemies = removePlayer idx model.enemies }
+        ChangeEnemy idx xp count ->
+            { model | enemies = Array.set idx (Enemy xp count) model.enemies }
+        UpdateNextEnemy xp count ->
+            { model | nextEnemy = Enemy xp count }
 
 
 -- VIEW
-
 view : Model -> Html Msg
 view model =
-    table [] 
+    div [ style [ ("display", "flex")
+                , ("flex-flow", "row wrap")
+                , ("justify-content", "center")
+                , ("align-items", "flex-start")
+                , ("align-content", "flex-start")
+                ] ] 
+        [ div [] [ characterView model ]
+        , div [] [ enemyView model ] 
+        ]
+
+characterView : Model -> Html Msg
+characterView model = 
+    table [ style [("border", "1px solid gray"), ("border-collapse", "collapse")] ] 
         [ caption [] [ text "Characters" ]
-        , thead [] 
+        , thead [ style [("font-size", "smaller")] ] 
             [ tr [] 
                 [ th [] [ text "Active" ]
                 , th [] [ text "Character" ]
@@ -63,31 +98,31 @@ view model =
                 , th [] []
                 ]
             ]
-        , tbody [] ((Array.toList (Array.indexedMap makeRow model.players)) ++ 
-            [ tr [] 
-                [ td [] [] 
-                , td [] [ input [ type_ "text"
-                                , placeholder "character"
-                                , value model.nextPlayer.name
-                                , onInput (\ newName -> UpdateNext newName model.nextPlayer.level)
-                                ] []
-                        ]
-                , td [] [ input [ type_ "number" 
-                                , value (toString model.nextPlayer.level)
-                                , onInput (\ newLvlStr -> UpdateNext model.nextPlayer.name (Result.withDefault 0 (String.toInt newLvlStr)))
-                                ] []
-                        ]
-                , td [] [ input [ type_ "button"
-                                , value "+"
-                                , onClick (AddPlayer model.nextPlayer)
-                                ] [] 
-                        ]
-                ]
-            ])
+        , tbody [] (Array.toList (Array.indexedMap makeCharacterRow model.players))
+        , tfoot [] [ tr [] 
+                        [ td [] [] 
+                        , td [] [ input [ type_ "text"
+                                        , placeholder "character"
+                                        , value model.nextPlayer.name
+                                        , onInput (\ newName -> UpdateNext newName model.nextPlayer.level)
+                                        ] []
+                                ]
+                        , td [] [ input [ type_ "number" 
+                                        , value (toString model.nextPlayer.level)
+                                        , onInput (\ newLvlStr -> UpdateNext model.nextPlayer.name (Result.withDefault 0 (String.toInt newLvlStr)))
+                                        ] []
+                                ]
+                        , td [] [ input [ type_ "button"
+                                        , value "+"
+                                        , onClick (AddPlayer model.nextPlayer)
+                                        ] [] 
+                                ]
+                        ] 
+                    ]
         ]
 
-makeRow : Int -> Player -> Html Msg
-makeRow index player =
+makeCharacterRow : Int -> Player -> Html Msg
+makeCharacterRow index player =
     tr [ style [("opacity", if player.active then "1.0" else "0.5")] ] 
         [ td    [ onClick (ChangePlayer index player.name player.level (not player.active)) 
                 ] 
@@ -116,3 +151,57 @@ makeRow index player =
                         [] 
                 ]
         ]
+
+enemyView : Model -> Html Msg
+enemyView model =
+    table [  style [("border", "1px solid gray"), ("border-collapse", "collapse")] ] 
+            [ caption [] [ text "Enemies" ] 
+            , thead [ style [("font-size", "smaller")] ] 
+                            [ tr [] [ th [] []
+                            , th [] [ text "XP" ]
+                            , th [] [ text "Count" ]
+                            , th [] []
+                            ]
+                        ]
+             , tbody [] (Array.toList (Array.indexedMap makeEnemyRow model.enemies))
+             , tfoot [] [ tr [] [ td [] []
+                                , td [] [ input [ type_ "number"
+                                                , placeholder "XP"
+                                                , step "10"
+                                                , onInput (\newXp -> UpdateNextEnemy (Result.withDefault 0 (String.toInt newXp)) model.nextEnemy.count)
+                                                ] [] 
+                                        ]
+                                , td [] [ input [ type_ "number" 
+                                                , placeholder "Count"
+                                                , onInput (\newCount -> UpdateNextEnemy model.nextEnemy.xp (Result.withDefault 0 (String.toInt newCount)))
+                                                ] []
+                                        ]
+                                , td [] [ input [ type_ "button"
+                                                , value "+"
+                                                , onClick (AddEnemy model.nextEnemy)
+                                                ] []
+                                        ]
+                                ] ]
+             ]
+
+makeEnemyRow : Int -> Enemy -> Html Msg
+makeEnemyRow idx enemy =
+    tr [] [ td [] [ text (toString (idx + 1)) ]
+          , td [] [ input [ type_ "number"
+                          , value (toString enemy.xp)
+                          , step "10"
+                          , onInput (\ newXp -> ChangeEnemy idx (Result.withDefault 0 (String.toInt newXp)) enemy.count)
+                          ] [] 
+                  ]
+          , td [] [ input [ type_ "number"
+                          , value (toString enemy.count)
+                          , onInput (\ newCount -> ChangeEnemy idx enemy.xp (Result.withDefault 0 (String.toInt newCount)))
+                          ] []
+                  ]
+          , td [] [ input [ type_ "button"
+                          , value "-"
+                          , onClick (RemoveEnemy idx)
+                          ] []
+                  ]
+          ]
+
