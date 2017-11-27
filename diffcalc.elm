@@ -90,10 +90,15 @@ removeElement idx arr =
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div [ id "wrap-entry-tables" ]
-        [ div [] [ characterView model.players ]
-        , div [] [ enemyView model.enemies ]
+    div []
+        [ div [ id "wrap-entry-tables" ]
+              [ div [] [ characterView model.players ]
+              , div [] [ enemyView model.enemies ]
+              ]
+        , div [ id "wrap-results" ]
+              [ resultView <| getOutputInfo model ]
         ]
+
 
 characterView : InputTableModel Player -> Html Msg
 characterView model =
@@ -224,9 +229,81 @@ makeEnemyRow idx enemy =
                   ]
           ]
 
+resultView : DifficultyResult -> Html Msg
+resultView result =
+    div []
+        [ span [ id "result-level"]
+               [ text (toString result.level)]
+        , progress [ id "result-bar"
+                   {- , value (toString (toFloat (result.challenge - result.below) / toFloat (result.above - result.below))) -}
+                   ]
+                   [ text "test" ]
+        , span []
+               [ text (toString result.below) ]
+        , span []
+               [ text (toString result.challenge) ]
+        , span []
+               [ text (toString result.above) ]
+        ]
 
--- how to model thresholds for character levels?
--- how to model multiplier for monster count?
+{-
+    How do we figure out the output?
+        Filter all players by active
+        For the active players, create a threshold (map)
+        Fold list of thresholds into one by summing the each field
+    That gives us the party thresholds, which is already good progress
+
+    What about enemies?
+        Map each enemy to an adjusted XP value
+        Fold the values into a sum
+
+    Compare the enemy SUM to the Character thresholds,
+    see which one's we're between. This gives us...
+        yeah. that's close alright.
+
+    For display, we want:
+        The party "power"
+        The total party thresholds
+        The enemy "power"
+        Difficulty Level Estimate
+        A bar that shows the relationship between the enemy power and the
+        thresholds below and above that power
+-}
+
+getOutputInfo : Model -> DifficultyResult
+getOutputInfo model =
+    let
+        partyThresholds = getPartyThresholds model.players.rows
+        totalEnemyPower = getTotalEnemyPower model.enemies.rows
+    in
+        comparePartyToEnemies partyThresholds totalEnemyPower
+
+getPartyThresholds : Array Player -> Thresholds
+getPartyThresholds players =
+    let
+        foldHelper totals current =
+            { easy = totals.easy + current.easy
+            , medium = totals.medium + current.medium
+            , hard = totals.hard + current.hard
+            , deadly = totals.deadly + current.deadly
+            }
+    in
+        players
+        |> Array.filter (\player -> player.active)
+        |> Array.map (\player -> getThresholdsForLevel player.level)
+        |> Array.foldr foldHelper (Thresholds 0 0 0 0)
+
+
+getTotalEnemyPower : Array Enemy -> Int
+getTotalEnemyPower enemies = Array.foldr (+) 0 <| Array.map getEnemyPower enemies
+
+getEnemyPower : Enemy -> Int
+getEnemyPower enemy =
+    let
+        totalXp = enemy.count * enemy.xp
+        mult = multForEnemyCount enemy.count
+    in
+        floor (mult * toFloat totalXp)
 
 multForEnemyCount : Int -> Float
 multForEnemyCount count = (count <= 1)  => 1.0
@@ -236,11 +313,26 @@ multForEnemyCount count = (count <= 1)  => 1.0
                        |= (count <= 14) => 3.0
                        |= 4.0
 
-type Difficulty
-    = Easy
+comparePartyToEnemies : Thresholds -> Int -> DifficultyResult
+comparePartyToEnemies party challenge = (challenge < party.easy)   => DifficultyResult Trivial challenge 0 party.easy
+                                     |= (challenge < party.medium) => DifficultyResult Easy challenge party.easy party.medium
+                                     |= (challenge < party.hard)   => DifficultyResult Medium challenge party.medium party.hard
+                                     |= (challenge < party.deadly) => DifficultyResult Hard challenge party.hard party.deadly
+                                     |= DifficultyResult Deadly challenge party.deadly challenge
+
+type DifficultyLevel
+    = Trivial
+    | Easy
     | Medium
     | Hard
     | Deadly
+
+type alias DifficultyResult =
+    { level: DifficultyLevel
+    , challenge: Int
+    , below: Int
+    , above: Int
+    }
 
 type alias Thresholds =
     { easy : Int
@@ -249,9 +341,11 @@ type alias Thresholds =
     , deadly : Int
     }
 
-getThresholdForDifficulty : Thresholds -> Difficulty -> Int
+getThresholdForDifficulty : Thresholds -> DifficultyLevel -> Int
 getThresholdForDifficulty th diff =
     case diff of
+        Trivial ->
+            0
         Easy ->
             th.easy
         Medium ->
@@ -296,18 +390,3 @@ getThresholdsForLevel lvl =
             Just thresh -> thresh
             _ -> Thresholds 0 0 0 0-- should neve happen since we clamped the level
 
-type alias EnemyXpCalc =
-    { enemy : Enemy
-    , totalXp : Int
-    , mult : Float
-    , adjust : Int
-    }
-
-calcEnemyStuff : Enemy -> EnemyXpCalc
-calcEnemyStuff enemy =
-    let
-        totalXp = enemy.count * enemy.xp
-        mult = multForEnemyCount enemy.count
-        adjust = floor (mult * toFloat totalXp)
-    in
-        EnemyXpCalc enemy totalXp mult adjust
