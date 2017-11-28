@@ -8341,6 +8341,35 @@ var _user$project$Main$getTotalEnemyPower = function (enemies) {
 		0,
 		A2(_elm_lang$core$Array$map, _user$project$Main$getEnemyPower, enemies));
 };
+var _user$project$Main$percentageForDifficultyResult = function (result) {
+	return function (s) {
+		return A2(_elm_lang$core$Basics_ops['++'], s, '%');
+	}(
+		_elm_lang$core$Basics$toString(
+			_elm_lang$core$Basics$round(
+				A2(
+					F2(
+						function (x, y) {
+							return x * y;
+						}),
+					100,
+					_elm_lang$core$Basics$toFloat(result.challenge - result.below) / _elm_lang$core$Basics$toFloat(result.above - result.below)))));
+};
+var _user$project$Main$colorForDifficulty = function (d) {
+	var _p1 = d;
+	switch (_p1.ctor) {
+		case 'Trivial':
+			return 'lightgreen';
+		case 'Easy':
+			return 'green';
+		case 'Medium':
+			return 'yellow';
+		case 'Hard':
+			return 'orange';
+		default:
+			return 'red';
+	}
+};
 var _user$project$Main$resultView = function (result) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8466,10 +8495,18 @@ var _user$project$Main$resultView = function (result) {
 									_0: _elm_lang$html$Html_Attributes$style(
 										{
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'width', _1: '20%'},
+											_0: {
+												ctor: '_Tuple2',
+												_0: 'width',
+												_1: _user$project$Main$percentageForDifficultyResult(result)
+											},
 											_1: {
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'rgb(43, 194, 83)'},
+												_0: {
+													ctor: '_Tuple2',
+													_0: 'background-color',
+													_1: _user$project$Main$colorForDifficulty(result.level)
+												},
 												_1: {ctor: '[]'}
 											}
 										}),
@@ -8496,46 +8533,46 @@ var _user$project$Main$removeElement = F2(
 	});
 var _user$project$Main$updateInputTable = F2(
 	function (table, msg) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'Add':
 				return _elm_lang$core$Native_Utils.update(
 					table,
 					{
-						rows: A2(_elm_lang$core$Array$push, _p1._0, table.rows)
+						rows: A2(_elm_lang$core$Array$push, _p2._0, table.rows)
 					});
 			case 'Remove':
 				return _elm_lang$core$Native_Utils.update(
 					table,
 					{
-						rows: A2(_user$project$Main$removeElement, _p1._0, table.rows)
+						rows: A2(_user$project$Main$removeElement, _p2._0, table.rows)
 					});
 			case 'Replace':
 				return _elm_lang$core$Native_Utils.update(
 					table,
 					{
-						rows: A3(_elm_lang$core$Array$set, _p1._0, _p1._1, table.rows)
+						rows: A3(_elm_lang$core$Array$set, _p2._0, _p2._1, table.rows)
 					});
 			default:
 				return _elm_lang$core$Native_Utils.update(
 					table,
-					{next: _p1._0});
+					{next: _p2._0});
 		}
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		if (_p2.ctor === 'PlayerInput') {
+		var _p3 = msg;
+		if (_p3.ctor === 'PlayerInput') {
 			return _elm_lang$core$Native_Utils.update(
 				model,
 				{
-					players: A2(_user$project$Main$updateInputTable, model.players, _p2._0)
+					players: A2(_user$project$Main$updateInputTable, model.players, _p3._0)
 				});
 		} else {
 			return _elm_lang$core$Native_Utils.update(
 				model,
 				{
-					enemies: A2(_user$project$Main$updateInputTable, model.enemies, _p2._0)
+					enemies: A2(_user$project$Main$updateInputTable, model.enemies, _p3._0)
 				});
 		}
 	});
@@ -8662,9 +8699,9 @@ var _user$project$Main$thresholdsForLevels = _elm_lang$core$Array$fromList(
 var _user$project$Main$getThresholdsForLevel = function (lvl) {
 	var top = _elm_lang$core$Array$length(_user$project$Main$thresholdsForLevels);
 	var clampedLvl = A3(_elm_lang$core$Basics$clamp, 0, top, lvl);
-	var _p3 = A2(_elm_lang$core$Array$get, clampedLvl, _user$project$Main$thresholdsForLevels);
-	if (_p3.ctor === 'Just') {
-		return _p3._0;
+	var _p4 = A2(_elm_lang$core$Array$get, clampedLvl, _user$project$Main$thresholdsForLevels);
+	if (_p4.ctor === 'Just') {
+		return _p4._0;
 	} else {
 		return A4(_user$project$Main$Thresholds, 0, 0, 0, 0);
 	}
@@ -9435,7 +9472,7 @@ var _user$project$Main$comparePartyToEnemies = F2(
 			_Fresheyeball$elm_guards$Guards_ops['|='],
 			A2(
 				_Fresheyeball$elm_guards$Guards_ops['=>'],
-				_elm_lang$core$Native_Utils.cmp(challenge, party.easy) < 0,
+				_elm_lang$core$Native_Utils.cmp(challenge, party.easy) < 1,
 				A4(_user$project$Main$DifficultyResult, _user$project$Main$Trivial, challenge, 0, party.easy)),
 			A2(
 				_Fresheyeball$elm_guards$Guards_ops['|='],

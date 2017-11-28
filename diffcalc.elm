@@ -251,13 +251,30 @@ resultView result =
                     [ text (toString result.above) ]
               ]
         , div [ id "result-bar" ]
-              [ span [ style [("width", "20%")
-                             , ("background-color", "rgb(43, 194, 83)")
+              [ span [ style [ ("width", percentageForDifficultyResult result)
+                             , ("background-color", colorForDifficulty result.level)
                              ]
                      ]
                      []
               ]
         ]
+
+colorForDifficulty : DifficultyLevel -> String
+colorForDifficulty d =
+    case d of
+        Trivial -> "lightgreen"
+        Easy -> "green"
+        Medium -> "yellow"
+        Hard -> "orange"
+        Deadly -> "red"
+
+percentageForDifficultyResult : DifficultyResult -> String
+percentageForDifficultyResult result =
+    (toFloat (result.challenge - result.below) / toFloat (result.above - result.below))
+    |> (*) 100
+    |> round
+    |> toString
+    |> (\s -> s ++ "%")
 
 {-
     How do we figure out the output?
@@ -327,7 +344,7 @@ multForEnemyCount count = (count <= 1)  => 1.0
                        |= 4.0
 
 comparePartyToEnemies : Thresholds -> Int -> DifficultyResult
-comparePartyToEnemies party challenge = (challenge < party.easy)   => DifficultyResult Trivial challenge 0 party.easy
+comparePartyToEnemies party challenge = (challenge <= party.easy)  => DifficultyResult Trivial challenge 0 party.easy
                                      |= (challenge < party.medium) => DifficultyResult Easy challenge party.easy party.medium
                                      |= (challenge < party.hard)   => DifficultyResult Medium challenge party.medium party.hard
                                      |= (challenge < party.deadly) => DifficultyResult Hard challenge party.hard party.deadly
