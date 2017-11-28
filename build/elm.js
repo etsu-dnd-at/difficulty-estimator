@@ -8435,7 +8435,11 @@ var _user$project$Main$resultView = function (result) {
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html_Attributes$id('result-below'),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$title('This difficulty level'),
+									_1: {ctor: '[]'}
+								}
 							},
 							{
 								ctor: '::',
@@ -8450,7 +8454,11 @@ var _user$project$Main$resultView = function (result) {
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$id('result-value'),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$title('Enemy power'),
+										_1: {ctor: '[]'}
+									}
 								},
 								{
 									ctor: '::',
@@ -8465,7 +8473,11 @@ var _user$project$Main$resultView = function (result) {
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html_Attributes$id('result-above'),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$title('Next difficulty level'),
+											_1: {ctor: '[]'}
+										}
 									},
 									{
 										ctor: '::',

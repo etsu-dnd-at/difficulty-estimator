@@ -249,11 +249,11 @@ resultView result =
         , div [ id "result-numbers-container"
               , class "row-flex"
               ]
-              [ div [ id "result-below" ]
+              [ div [ id "result-below", title "This difficulty level" ]
                     [ text (toString result.below) ]
-              , div [ id "result-value" ]
+              , div [ id "result-value", title "Enemy power" ]
                     [ text (toString result.challenge) ]
-              , div [ id "result-above" ]
+              , div [ id "result-above", title "Next difficulty level" ]
                     [ text (toString result.above) ]
               ]
         , div [ id "result-bar" ]
