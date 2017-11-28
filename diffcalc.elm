@@ -122,6 +122,8 @@ characterView model =
                                         ] []
                                 ]
                         , td [] [ input [ type_ "number"
+                                        , Html.Attributes.min "1"
+                                        , Html.Attributes.max "20"
                                         , value (toString model.next.level)
                                         , onInput (\ newLvlStr -> PlayerInput <| UpdateNext <| Player model.next.name
                                                                                                       (Result.withDefault 0 <| String.toInt newLvlStr)
@@ -192,11 +194,13 @@ enemyView model =
                                 , td [] [ input [ type_ "number"
                                                 , placeholder "XP"
                                                 , step "25"
+                                                , Html.Attributes.min "0"
                                                 , onInput (\newXp -> EnemyInput <| UpdateNext <| Enemy (Result.withDefault 0 (String.toInt newXp)) model.next.count)
                                                 ] []
                                         ]
                                 , td [] [ input [ type_ "number"
                                                 , placeholder "Count"
+                                                , Html.Attributes.min "0"
                                                 , onInput (\newCount -> EnemyInput <| UpdateNext <| Enemy model.next.xp (Result.withDefault 0 (String.toInt newCount)))
                                                 ] []
                                         ]
@@ -213,12 +217,14 @@ makeEnemyRow idx enemy =
     tr [] [ td [] [ text (toString (idx + 1)) ]
           , td [] [ input [ type_ "number"
                           , value (toString enemy.xp)
-                          , step "10"
+                          , step "25"
+                          , Html.Attributes.min "0"
                           , onInput (\ newXp -> EnemyInput <| Replace idx <| Enemy (Result.withDefault 0 (String.toInt newXp)) enemy.count)
                           ] []
                   ]
           , td [] [ input [ type_ "number"
                           , value (toString enemy.count)
+                          , Html.Attributes.min "0"
                           , onInput (\ newCount -> EnemyInput <| Replace idx <| Enemy enemy.xp (Result.withDefault 0 (String.toInt newCount)))
                           ] []
                   ]

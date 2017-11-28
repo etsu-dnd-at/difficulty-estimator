@@ -8777,24 +8777,28 @@ var _user$project$Main$makeEnemyRow = F2(
 											_elm_lang$core$Basics$toString(enemy.xp)),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$step('10'),
+											_0: _elm_lang$html$Html_Attributes$step('25'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onInput(
-													function (newXp) {
-														return _user$project$Main$EnemyInput(
-															A2(
-																_user$project$Main$Replace,
-																idx,
+												_0: _elm_lang$html$Html_Attributes$min('0'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(
+														function (newXp) {
+															return _user$project$Main$EnemyInput(
 																A2(
-																	_user$project$Main$Enemy,
+																	_user$project$Main$Replace,
+																	idx,
 																	A2(
-																		_elm_lang$core$Result$withDefault,
-																		0,
-																		_elm_lang$core$String$toInt(newXp)),
-																	enemy.count)));
-													}),
-												_1: {ctor: '[]'}
+																		_user$project$Main$Enemy,
+																		A2(
+																			_elm_lang$core$Result$withDefault,
+																			0,
+																			_elm_lang$core$String$toInt(newXp)),
+																		enemy.count)));
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
@@ -8820,21 +8824,25 @@ var _user$project$Main$makeEnemyRow = F2(
 												_elm_lang$core$Basics$toString(enemy.count)),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onInput(
-													function (newCount) {
-														return _user$project$Main$EnemyInput(
-															A2(
-																_user$project$Main$Replace,
-																idx,
+												_0: _elm_lang$html$Html_Attributes$min('0'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(
+														function (newCount) {
+															return _user$project$Main$EnemyInput(
 																A2(
-																	_user$project$Main$Enemy,
-																	enemy.xp,
+																	_user$project$Main$Replace,
+																	idx,
 																	A2(
-																		_elm_lang$core$Result$withDefault,
-																		0,
-																		_elm_lang$core$String$toInt(newCount)))));
-													}),
-												_1: {ctor: '[]'}
+																		_user$project$Main$Enemy,
+																		enemy.xp,
+																		A2(
+																			_elm_lang$core$Result$withDefault,
+																			0,
+																			_elm_lang$core$String$toInt(newCount)))));
+														}),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									},
@@ -8984,19 +8992,23 @@ var _user$project$Main$enemyView = function (model) {
 																	_0: _elm_lang$html$Html_Attributes$step('25'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onInput(
-																			function (newXp) {
-																				return _user$project$Main$EnemyInput(
-																					_user$project$Main$UpdateNext(
-																						A2(
-																							_user$project$Main$Enemy,
+																		_0: _elm_lang$html$Html_Attributes$min('0'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onInput(
+																				function (newXp) {
+																					return _user$project$Main$EnemyInput(
+																						_user$project$Main$UpdateNext(
 																							A2(
-																								_elm_lang$core$Result$withDefault,
-																								0,
-																								_elm_lang$core$String$toInt(newXp)),
-																							model.next.count)));
-																			}),
-																		_1: {ctor: '[]'}
+																								_user$project$Main$Enemy,
+																								A2(
+																									_elm_lang$core$Result$withDefault,
+																									0,
+																									_elm_lang$core$String$toInt(newXp)),
+																								model.next.count)));
+																				}),
+																			_1: {ctor: '[]'}
+																		}
 																	}
 																}
 															}
@@ -9021,19 +9033,23 @@ var _user$project$Main$enemyView = function (model) {
 																	_0: _elm_lang$html$Html_Attributes$placeholder('Count'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onInput(
-																			function (newCount) {
-																				return _user$project$Main$EnemyInput(
-																					_user$project$Main$UpdateNext(
-																						A2(
-																							_user$project$Main$Enemy,
-																							model.next.xp,
+																		_0: _elm_lang$html$Html_Attributes$min('0'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onInput(
+																				function (newCount) {
+																					return _user$project$Main$EnemyInput(
+																						_user$project$Main$UpdateNext(
 																							A2(
-																								_elm_lang$core$Result$withDefault,
-																								0,
-																								_elm_lang$core$String$toInt(newCount)))));
-																			}),
-																		_1: {ctor: '[]'}
+																								_user$project$Main$Enemy,
+																								model.next.xp,
+																								A2(
+																									_elm_lang$core$Result$withDefault,
+																									0,
+																									_elm_lang$core$String$toInt(newCount)))));
+																				}),
+																			_1: {ctor: '[]'}
+																		}
 																	}
 																}
 															},
@@ -9397,24 +9413,32 @@ var _user$project$Main$characterView = function (model) {
 																_0: _elm_lang$html$Html_Attributes$type_('number'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$value(
-																		_elm_lang$core$Basics$toString(model.next.level)),
+																	_0: _elm_lang$html$Html_Attributes$min('1'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onInput(
-																			function (newLvlStr) {
-																				return _user$project$Main$PlayerInput(
-																					_user$project$Main$UpdateNext(
-																						A3(
-																							_user$project$Main$Player,
-																							model.next.name,
-																							A2(
-																								_elm_lang$core$Result$withDefault,
-																								0,
-																								_elm_lang$core$String$toInt(newLvlStr)),
-																							true)));
-																			}),
-																		_1: {ctor: '[]'}
+																		_0: _elm_lang$html$Html_Attributes$max('20'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$value(
+																				_elm_lang$core$Basics$toString(model.next.level)),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Events$onInput(
+																					function (newLvlStr) {
+																						return _user$project$Main$PlayerInput(
+																							_user$project$Main$UpdateNext(
+																								A3(
+																									_user$project$Main$Player,
+																									model.next.name,
+																									A2(
+																										_elm_lang$core$Result$withDefault,
+																										0,
+																										_elm_lang$core$String$toInt(newLvlStr)),
+																									true)));
+																					}),
+																				_1: {ctor: '[]'}
+																			}
+																		}
 																	}
 																}
 															},
