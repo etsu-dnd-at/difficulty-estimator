@@ -90,12 +90,12 @@ removeElement idx arr =
 -- VIEW
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [ id "wrap-entry-tables" ]
+    div [ id "all-wrapper", class "column-flex" ]
+        [ div [ id "wrap-entry-tables", class "row-flex" ]
               [ div [] [ characterView model.players ]
               , div [] [ enemyView model.enemies ]
               ]
-        , div [ id "wrap-results" ]
+        , div [ id "wrap-results", class "row-flex" ]
               [ resultView <| getOutputInfo model ]
         ]
 
@@ -229,21 +229,34 @@ makeEnemyRow idx enemy =
                   ]
           ]
 
+{- , value (toString (toFloat (result.challenge - result.below) / toFloat (result.above - result.below))) -}
 resultView : DifficultyResult -> Html Msg
 resultView result =
-    div []
-        [ span [ id "result-level"]
-               [ text (toString result.level)]
-        , progress [ id "result-bar"
-                   {- , value (toString (toFloat (result.challenge - result.below) / toFloat (result.above - result.below))) -}
-                   ]
-                   [ text "test" ]
-        , span []
-               [ text (toString result.below) ]
-        , span []
-               [ text (toString result.challenge) ]
-        , span []
-               [ text (toString result.above) ]
+    div [ id "result-container"
+        ]
+        [ div [ id "result-level-container"
+              , class "row-flex"
+              ]
+              [ div [ id "result-level" ]
+                    [ span [] [ text (toString result.level) ] ]
+              ]
+        , div [ id "result-numbers-container"
+              , class "row-flex"
+              ]
+              [ div [ id "result-below" ]
+                    [ text (toString result.below) ]
+              , div [ id "result-value" ]
+                    [ text (toString result.challenge) ]
+              , div [ id "result-above" ]
+                    [ text (toString result.above) ]
+              ]
+        , div [ id "result-bar" ]
+              [ span [ style [("width", "20%")
+                             , ("background-color", "rgb(43, 194, 83)")
+                             ]
+                     ]
+                     []
+              ]
         ]
 
 {-
